@@ -271,6 +271,158 @@ server.delete("/warehouse/v1/users/:useremail", validateToken, async (req, res) 
 
 
 
+/**** Regiones ****/
+
+
+///Endpoint para obtener todas las regiones
+server.get("/warehouse/v1/regions/", validateToken, async (req, res) => {
+    const admin = req.tokenInfo.isAdmin;
+    try {
+        if (admin) {
+            const getRegions = await obtenerDatosBD('regions', true, true, true);
+            if (getRegions.length > 0) {
+                res.status(200).json({data: getRegions, status: 200});
+            } else {
+                res.status(404).send("No hay regiones creadas");
+            }
+        } else {
+            res.status(401).json("Acceso denegado, la cuenta debe ser administrador");
+        }
+    } catch (error) {
+        res.status(500).send("Ah ocurrido un error...." + error);
+    }
+})
+
+
+///Endpoint para crear una región
+server.post("/warehouse/v1/regions/", validateToken, async (req, res) => {
+    const admin = req.tokenInfo.isAdmin;
+    const { name } = req.body;	
+    try {
+        if (admin) {            
+            const nameRegionBD = await obtenerDatosBD("regions", "name", name);
+            if (nameRegionBD) {
+                res.status(409).json("El nombre ingresado ya existe, por favor intente con otro");
+                return;
+            }
+            if (name) {
+                const updateBD = await sequelize.query(
+                    "INSERT INTO regions (name) VALUES (:name)",
+                    { replacements: { name } }
+                );
+                res.status(200).json("Región creada correctamente");
+            } else {
+                res.status(400).send("Debe ingresar un nombre para crear la región");
+            }
+        } else {
+            res.status(401).json("Acceso denegado, la cuenta debe ser administrador");
+        }
+    } catch (error) {
+        res.status(500).send("Ah ocurrido un error...." + error);
+    }
+})
+
+
+///Endpoint para buscar una región en especifico (Solo Administrador)
+server.get("/warehouse/v1/regions/:name", validateToken, async (req, res) => {
+    const admin = req.tokenInfo.isAdmin;
+	const nameRegion = req.params.name;
+	try {
+		if (admin) {
+            const nameBD = await obtenerDatosBD("regions", "name", nameRegion);
+		    if (nameBD) {
+		    	res.status(200).json({data: nameBD, status: 200});
+		    } else {
+		    	res.status(404).json("El nombre ingresado no existe");
+		    }
+        } else {
+            res.status(401).json("Acceso denegado, la cuenta debe ser administrador");
+        }
+	} catch (error) {
+		res.status(500).send("Ah ocurrido un error...." + error);
+	}
+});
+
+
+///Endpoint para actualizar una región en especifico (Solo Administrador)
+server.put("/warehouse/v1/regions/:name", validateToken, async (req, res) => {
+    const admin = req.tokenInfo.isAdmin;
+	const nameRegion = req.params.name;
+	try {
+		if (admin) {
+            const nameBD = await obtenerDatosBD("regions", "name", nameRegion);
+            const regionId = nameBD.region_id;
+		    if (nameBD) {
+                const { name, disabled } = req.body;
+                if (name || disabled) {
+                    const regionFilter = filterProps({ name, disabled });
+                    const updateRegion = { ...nameBD, ...regionFilter };
+                    const updateBD = await sequelize.query (
+                        "UPDATE regions SET name = :nameUpdate, disabled = :isDisabled WHERE region_id = :regionId",
+                        {
+                            replacements: {
+                                nameUpdate: updateRegion.name,
+                                isDisabled: updateRegion.disabled,
+                                regionId: regionId,
+                            },
+                        }
+                    );
+                    res.status(200).send("La región ha sido actualizada correctamente");
+                } else {
+                    res.status(400).send("Debe haber por lo menos un campo para actualizar");
+                }		    	
+		    } else {
+		    	res.status(404).json("El nombre ingresado no existe");
+		    }
+        } else {
+            res.status(401).json("Acceso denegado, la cuenta debe ser administrador");
+        }
+	} catch (error) {
+		res.status(500).send("Ah ocurrido un error...." + error);
+	}
+});
+
+
+///Endpoint para eliminar una región en especifico (Solo Administrador)
+server.delete("/warehouse/v1/regions/:name", validateToken, async (req, res) => {
+    admin = req.tokenInfo.isAdmin;
+    nameRegion = req.params.name;
+    if (admin) {
+        nameBD = await obtenerDatosBD("regions", "name", nameRegion);
+        regionId = nameBD.region_id;
+        if (nameBD) {
+            const updateBD = await sequelize.query(`UPDATE regions set disabled = true WHERE region_id = :regionId`, {
+                replacements: {
+                    regionId: regionId,
+                },
+            });
+            res.status(200).send("La región ha sido eliminada correctamente");
+        } else {
+            res.status(404).json("El nombre ingresado no existe");
+        }
+    } else {
+        res.status(401).json("Acceso denegado, la cuenta debe ser administrador");
+    }
+});
+
+
+
+
+
+// server.get("/warehouse/v1/regions/", async (req, res) => {    
+//     const num = 1;
+//     const orders = await sequelize.query(
+//         // "SELECT * FROM countries INNER JOIN regions ON countries.region_id = regions.region_id;",
+//         "SELECT * FROM countries WHERE region_id = :id;",
+//         {
+//             replacements: { id: num },
+//             type: QueryTypes.SELECT,
+//         }
+//     );
+//     if (orders.length > 0) {
+//         res.status(200).json({data: orders, status: 200});
+//     }
+// });
 
 
 

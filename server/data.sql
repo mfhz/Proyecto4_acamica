@@ -13,7 +13,8 @@ CREATE TABLE users (
 ---- Tabla de Regiones
 CREATE TABLE regions (
   region_id INT PRIMARY KEY AUTO_INCREMENT,
-  name VARCHAR (60) NOT NULL
+  name VARCHAR (60) NOT NULL,
+  disabled BOOLEAN DEFAULT FALSE
 );
 
 
@@ -22,6 +23,7 @@ CREATE TABLE countries (
   country_id INT PRIMARY KEY AUTO_INCREMENT,
   name VARCHAR (60) NOT NULL,
   region_id INT NOT NULL DEFAULT "0",
+  disabled BOOLEAN DEFAULT FALSE,
   FOREIGN KEY(region_id) REFERENCES regions(region_id)
 );
 
@@ -31,6 +33,7 @@ CREATE TABLE cities (
   city_id INT PRIMARY KEY AUTO_INCREMENT,
   name VARCHAR (60) NOT NULL,
   country_id INT NOT NULL DEFAULT "0",
+  disabled BOOLEAN DEFAULT FALSE,
   FOREIGN KEY(country_id) REFERENCES countries(country_id)
 );
 
@@ -43,6 +46,7 @@ CREATE TABLE companies (
   mail VARCHAR(60) NOT NULL,
   phone INT NOT NULL,
   city_id INT,
+  disabled BOOLEAN DEFAULT FALSE,
   FOREIGN KEY(city_id) REFERENCES cities(city_id)
 );
 
@@ -57,6 +61,7 @@ CREATE TABLE contacts (
   company_id INT,
   city_id INT,
   address VARCHAR (60) NOT NULL,
+  disabled BOOLEAN DEFAULT FALSE,
   FOREIGN KEY(company_id) REFERENCES companies(company_id),
   FOREIGN KEY(city_id) REFERENCES cities(city_id)
 );
@@ -96,7 +101,8 @@ INSERT INTO
 VALUES
   (
     NULL,
-    "America"
+    "America",
+    FALSE
   );
 
 INSERT INTO
@@ -104,7 +110,8 @@ INSERT INTO
 VALUES
   (
     NULL,
-    "Europa"
+    "Europa",
+    FALSE
   );
 
 INSERT INTO
@@ -112,7 +119,8 @@ INSERT INTO
 VALUES
   (
     NULL,
-    "Europa"
+    "Asia",
+    FALSE
   );
 
 
@@ -123,32 +131,38 @@ VALUES
   (
     NULL,
     "Colombia",
-    1
+    1,
+    FALSE
   ),
   (
     NULL,
     "Mexico",
-    1
+    1,
+    FALSE
   ),
   (
     NULL,
     "España",
-    2
+    2,
+    FALSE
   ),
   (
     NULL,
     "Belgica",
-    2
+    2,
+    FALSE
   ),
   (
     NULL,
     "Japon",
-    3
+    3,
+    FALSE
   ),
   (
     NULL,
     "China",
-    3
+    3,
+    FALSE
   );
 
 
@@ -159,62 +173,74 @@ VALUES
   (
     NULL,
     "Bogota",
-    1
+    1,
+    FALSE
   ),
   (
     NULL,
     "Medellin",
-    1
+    1,
+    FALSE
   ),
   (
     NULL,
     "Monterrey",
-    2
+    2,
+    FALSE
   ),
   (
     NULL,
     "Tijuana",
-    2
+    2,
+    FALSE
   ),
   (
     NULL,
     "Barcelona",
-    3
+    3,
+    FALSE
   ),
   (
     NULL,
     "Madrid",
-    3
+    3,
+    FALSE
   ),
   (
     NULL,
     "Bruselas",
-    4
+    4,
+    FALSE
   ),
   (
     NULL,
     "Brujas",
-    4
+    4,
+    FALSE
   ),
   (
     NULL,
     "Tokio",
-    5
+    5,
+    FALSE
   ),
   (
     NULL,
     "Osaka",
-    5
+    5,
+    FALSE
   ),
   (
     NULL,
     "Pekin",
-    6
+    6,
+    FALSE
   ),
   (
     NULL,
     "Macao",
-    6
+    6,
+    FALSE
   );
 
 
@@ -228,7 +254,8 @@ VALUES
     "Crr44 A",
     "instal@instal.com",
     56465489,
-    6
+    6,
+    FALSE
   ),
   (
     NULL,
@@ -236,7 +263,8 @@ VALUES
     "Crr46 A",
     "k2k@k2k.com",
     364126,
-    9
+    9,
+    FALSE
   );
 
 
@@ -252,7 +280,8 @@ VALUES
     "cesar@cesar.com",
     1,
     8,
-    "Calle 9"
+    "Calle 9",
+    FALSE
   ),
   (
     NULL,
@@ -262,7 +291,8 @@ VALUES
     "luis@luis.com",
     2,
     4,
-    "Calle 11"
+    "Calle 11",
+    FALSE
   );
 
 
