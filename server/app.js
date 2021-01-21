@@ -541,25 +541,141 @@ server.delete("/warehouse/v1/countries/:name", validateToken, async (req, res) =
     }
 });
 
-// server.get("/warehouse/v1/regions/", async (req, res) => {    
-//     const num = 1;
-//     const orders = await sequelize.query(
-//         // "SELECT * FROM countries INNER JOIN regions ON countries.region_id = regions.region_id;",
-//         "SELECT * FROM countries WHERE region_id = :id;",
-//         {
-//             replacements: { id: num },
-//             type: QueryTypes.SELECT,
-//         }
-//     );
-//     if (orders.length > 0) {
-//         res.status(200).json({data: orders, status: 200});
-//     }
-// });
 
 
+/**** Ciudades ****/
 
 
+///Endpoint para obtener todas las ciudades
+server.get("/warehouse/v1/cities/", validateToken, async (req, res) => {
+    const admin = req.tokenInfo.isAdmin;
+    try {
+        if (admin) {
+            const getCities = await obtenerDatosBD('cities', true, true, true);
+            if (getCities.length > 0) {
+                res.status(200).json({data: getCities, status: 200});
+            } else {
+                res.status(404).send("No hay ciudades creadas");
+            }
+        } else {
+            res.status(401).json("Acceso denegado, la cuenta debe ser administrador");
+        }
+    } catch (error) {
+        res.status(500).send("Ah ocurrido un error...." + error);
+    }
+})
 
+
+///Endpoint para crear una ciudad
+server.post("/warehouse/v1/cities/", validateToken, async (req, res) => {
+    const admin = req.tokenInfo.isAdmin;
+    const { name, countryId } = req.body;	
+    try {
+        if (admin) {            
+            const nameCityBD = await obtenerDatosBD("cities", "name", name);
+            if (nameCityBD) {
+                res.status(409).json("El nombre ingresado ya existe, por favor intente con otro");
+                return;
+            }
+            if (name && countryId) {
+                const updateBD = await sequelize.query(
+                    "INSERT INTO cities (name, country_id) VALUES (:name, :countryId)",
+                    { replacements: { name, countryId } }
+                );
+                res.status(200).json("Ciudad creada correctamente");
+            } else {
+                res.status(400).send("Se debe ingresar todos los parametros para crear la ciudad");
+            }
+        } else {
+            res.status(401).json("Acceso denegado, la cuenta debe ser administrador");
+        }
+    } catch (error) {
+        res.status(500).send("Ah ocurrido un error...." + error);
+    }
+})
+
+
+///Endpoint para buscar una ciudad en especifico (Solo Administrador)
+server.get("/warehouse/v1/cities/:name", validateToken, async (req, res) => {
+    const admin = req.tokenInfo.isAdmin;
+	const nameCity = req.params.name;
+	try {
+		if (admin) {
+            const nameBD = await obtenerDatosBD("cities", "name", nameCity);
+		    if (nameBD) {
+		    	res.status(200).json({data: nameBD, status: 200});
+		    } else {
+		    	res.status(404).json("El nombre ingresado no existe");
+		    }
+        } else {
+            res.status(401).json("Acceso denegado, la cuenta debe ser administrador");
+        }
+	} catch (error) {
+		res.status(500).send("Ah ocurrido un error...." + error);
+	}
+});
+
+
+///Endpoint para actualizar una ciudad en especifico (Solo Administrador)
+server.put("/warehouse/v1/cities/:name", validateToken, async (req, res) => {
+    const admin = req.tokenInfo.isAdmin;
+	const nameCity= req.params.name;
+	try {
+		if (admin) {
+            const nameBD = await obtenerDatosBD("cities", "name", nameCity);
+            const cityId = nameBD.city_id;
+		    if (nameBD) {
+                const { name, disabled } = req.body;
+                if (name || disabled) {
+                    const cityFilter = filterProps({ name, disabled });
+                    const updateCity= { ...nameBD, ...cityFilter };
+                    const updateBD = await sequelize.query (
+                        "UPDATE cities SET name = :nameUpdate, disabled = :isDisabled WHERE city_id = :cityId",
+                        {
+                            replacements: {
+                                nameUpdate: updateCity.name,
+                                isDisabled: updateCity.disabled,
+                                cityId: cityId,
+                            },
+                        }
+                    );
+                    res.status(200).send("La ciudad ha sido actualizada correctamente");
+                } else {
+                    res.status(400).send("Debe haber por lo menos un campo para actualizar");
+                }		    	
+		    } else {
+		    	res.status(404).json("El nombre ingresado no existe");
+		    }
+        } else {
+            res.status(401).json("Acceso denegado, la cuenta debe ser administrador");
+        }
+	} catch (error) {
+		res.status(500).send("Ah ocurrido un error...." + error);
+	}
+});
+
+
+///Endpoint para eliminar una ciudad en especifico (Solo Administrador)
+server.delete("/warehouse/v1/cities/:name", validateToken, async (req, res) => {
+    admin = req.tokenInfo.isAdmin;
+    nameCity = req.params.name;
+    if (admin) {
+        nameBD = await obtenerDatosBD("cities", "name", nameCity);
+        cityId = nameBD.city_id;
+        if (nameBD) {
+            const updateBD = await sequelize.query(`UPDATE cities set disabled = true WHERE city_id = :cityId`, {
+                replacements: {
+                    cityId: cityId,
+                },
+            });
+            res.status(200).send("La ciudad ha sido eliminada correctamente");
+        } else {
+            res.status(404).json("El nombre ingresado no existe");
+        }
+    } else {
+        res.status(401).json("Acceso denegado, la cuenta debe ser administrador");
+    }
+});
 
 
 
@@ -609,3 +725,20 @@ function filterProps(obj) {
     Object.keys(obj).forEach((key) => !obj[key] && delete obj[key]);
 	return obj;
 }
+
+
+
+// server.get("/warehouse/v1/regions/", async (req, res) => {    
+//     const num = 1;
+//     const orders = await sequelize.query(
+//         // "SELECT * FROM countries INNER JOIN regions ON countries.region_id = regions.region_id;",
+//         "SELECT * FROM countries WHERE region_id = :id;",
+//         {
+//             replacements: { id: num },
+//             type: QueryTypes.SELECT,
+//         }
+//     );
+//     if (orders.length > 0) {
+//         res.status(200).json({data: orders, status: 200});
+//     }
+// });
