@@ -679,6 +679,133 @@ server.delete("/warehouse/v1/cities/:name", validateToken, async (req, res) => {
 
 
 
+/**** Compañias ****/
+
+
+
+///Endpoint para obtener todas las compañias
+server.get("/warehouse/v1/companies", validateToken, async (req, res) => {
+    try {
+        const companyBD = await obtenerDatosBD("companies", true, true, true);
+    
+        if (companyBD.length > 0) {
+            res.status(200).json({data: companyBD, status: 200});
+        } else { 
+            res.status(404).json("No hay compañias registradas");
+        }
+    } catch (error) {
+        res.status(500).send("Ah ocurrido un error...." + error);
+    }
+});
+ 
+
+///Endpoint para crear compañias
+server.post("/warehouse/v1/companies", validateToken, async (req, res) => {
+	const { name, address, email, phone, city } = req.body;	
+	try {
+		const companyBD = await obtenerDatosBD("companies", "mail", email);            
+        if (companyBD) {
+            res.status(409).json("Ya existe una compañía con este correo electrónico");
+            return;
+        }
+        if ((name && address && email && phone && city)) {
+            const updateBD = await sequelize.query(
+                "INSERT INTO companies (name, address, mail, phone, city_id) VALUES (:name, :address, :email, :phone, :city)",
+                { replacements: { name, address, email, phone, city } }
+            );
+            res.status(200).json("Compañía creada correctamente");
+        } else {
+            res.status(400).send("Todos los campos son necesarios para crear la compañia");
+        }
+	} catch (error) {
+		res.status(500).send("Ah ocurrido un error...." + error);
+	}
+});
+
+
+///Endpoint para actualizar informacion de la compañia creada
+server.put("/warehouse/v1/companies/:email", validateToken, async (req, res) => {
+	const emailCompany = req.params.email;
+    try {
+        const companyBD = await obtenerDatosBD("companies", "mail", emailCompany);
+        const companyId = companyBD.company_id;
+        if (companyBD) {
+            const { name, address, phone } = req.body;
+            if (name || address || phone) {
+                const companyFilter = filterProps({ name, address, phone });
+                const updateCompany = { ...companyBD, ...companyFilter };
+                console.log(updateCompany);
+                const updateBD = await sequelize.query(
+                    "UPDATE companies SET name = :updateName, address = :updateAddress, phone = :updatePhone WHERE company_id = :cityId",
+                    {
+                        replacements: {
+                            updateName: updateCompany.name,
+                            updateAddress: updateCompany.address,
+                            updatePhone: updateCompany.phone,
+                            cityId: companyId,
+                        },
+                    }
+                );
+                res.status(200).send("Compañia actualizada correctamente");
+            } else {
+                res.status(400).send("Debe haber por lo menos un campo para actualizar");
+            }
+        } else {
+            res.status(404).json("La compañía ingresada no existe");
+        }
+    } catch (error) {
+        res.status(500).send("Ah ocurrido un error...." + error);
+    }
+});
+ 
+
+///Endpoint para eliminar compañias
+server.delete("/warehouse/v1/companies/:email", validateToken, async (req, res) => {
+    const emailCompany = req.params.email;	
+    try {
+        const companyBD = await obtenerDatosBD("companies", "mail", emailCompany);
+        console.log(companyBD);
+        const companyId = companyBD.company_id;
+        if (companyBD) {
+            const updateBD = await sequelize.query(`UPDATE companies SET disabled = true WHERE company_id = :companyId`, {
+                replacements: {
+                    companyId: companyId,
+                },
+            });
+            res.status(200).json("La compañia se eliminó correctamente");
+        } else {
+            res.status(404).json("La compañia ingresada no existe");
+        }
+    } catch (error) {
+        res.status(500).send("Ah ocurrido un error...." + error);
+    }
+});
+  
+
+///Endpoint para buscar compañias en especifico (Solo Administrador)
+server.get("/warehouse/v1/companies/:id", validateToken, async (req, res) => {
+    const admin = req.tokenInfo.isAdmin;
+	const companyId = req.params.id;
+	try {
+		if (admin) {
+            const companyBD = await obtenerDatosBD("companies", "company_id", companyId);
+		    if (companyBD) {
+		    	res.status(200).json({data: companyBD, status: 200});
+		    } else {
+		    	res.status(404).json("El ID ingresado no existe");
+		    }
+        } else {
+            res.status(401).json("Acceso denegado, la cuenta debe ser administrador");
+        }
+	} catch (error) {
+		res.status(500).send("Ah ocurrido un error...." + error);
+	}
+});
+
+
+
+
+
 ////------- FUNCIONES -------\\\\
 
 
