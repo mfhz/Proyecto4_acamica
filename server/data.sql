@@ -51,8 +51,36 @@ CREATE TABLE companies (
 );
 
 
+---- Tabla de Canales
+CREATE TABLE channels (
+  channel_id INT PRIMARY KEY AUTO_INCREMENT,
+  name VARCHAR (60) NOT NULL,
+  disabled BOOLEAN DEFAULT FALSE
+);
+
+
+---- Tabla de Preferencias
+CREATE TABLE preferences (
+  preference_id INT PRIMARY KEY AUTO_INCREMENT,
+  name VARCHAR (60) NOT NULL,
+  disabled BOOLEAN DEFAULT FALSE
+);
+
+
+---- Tabla de Cuentas
+CREATE TABLE accounts (
+  account_id INT PRIMARY KEY AUTO_INCREMENT,
+  name VARCHAR (60) NOT NULL,
+  channel_id INT NOT NULL DEFAULT "0",
+  preference_id INT NOT NULL DEFAULT "0",
+  disabled BOOLEAN DEFAULT FALSE,
+  FOREIGN KEY(channel_id) REFERENCES channels(channel_id),
+  FOREIGN KEY(preference_id) REFERENCES preferences(preference_id)
+);
+
+
 ---- Tabla de Contactos
-CREATE TABLE contacts (
+CREATE TABLE contacts (  
   contact_id INT PRIMARY KEY AUTO_INCREMENT,
   name VARCHAR (60) NOT NULL,
   lastname VARCHAR (60) NOT NULL,
@@ -61,10 +89,14 @@ CREATE TABLE contacts (
   company_id INT,
   city_id INT,
   address VARCHAR (60) NOT NULL,
+  account_id INT,
   disabled BOOLEAN DEFAULT FALSE,
   FOREIGN KEY(company_id) REFERENCES companies(company_id),
-  FOREIGN KEY(city_id) REFERENCES cities(city_id)
+  FOREIGN KEY(city_id) REFERENCES cities(city_id),
+  FOREIGN KEY(account_id) REFERENCES accounts(account_id)
 );
+
+
 
 
 -- Creación de Usuarios
@@ -268,32 +300,90 @@ VALUES
   );
 
 
+-- Creación de Canales
+INSERT INTO
+  channels
+VALUES
+  (
+    NULL,
+    "Whatsapp",
+    FALSE
+  ),
+  (
+    NULL,
+    "Facebook",
+    FALSE
+  );
+
+
+-- Creación de Preferencias
+INSERT INTO
+  preferences
+VALUES
+  (
+    NULL,
+    "Sin preferencia",
+    FALSE
+  ),
+  (
+    NULL,
+    "No molestar",
+    FALSE
+  ),
+  (
+    NULL,
+    "Canal favorito",
+    FALSE
+  );
+
+
+-- Creación de Cuentas
+INSERT INTO
+  accounts
+VALUES
+  (
+    NULL,
+    "3218011550",
+    1,
+    1,
+    FALSE
+  ),
+  (
+    NULL,
+    "https://www.facebook.com",
+    2,
+    1,
+    FALSE
+  );
+
+
 -- Creación de Contactos
 INSERT INTO
   contacts
 VALUES
   (
     NULL,
-    "Cesar",
-    "Arias",
-    "Diseñador grafico",
-    "cesar@cesar.com",
+    "Juanito",
+    "Lopez",
+    "Desarrollador FullStack",
+    "juan@juan.com",
+    2,
+    2,
+    "Crr 54 # 6-21",
     1,
-    8,
-    "Calle 9",
     FALSE
   ),
   (
     NULL,
-    "Luis",
-    "Bernal",
-    "Arquitecto",
-    "luis@luis.com",
-    2,
+    "Sebastian",
+    "Rodriguez",
+    "Diseñador Grafico",
+    "sebas@sebas.com",
+    1,
     4,
-    "Calle 11",
+    "Crr 78 Sur # 61-1",
+    2,
     FALSE
   );
-
 
 

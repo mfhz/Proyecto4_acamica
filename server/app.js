@@ -804,6 +804,200 @@ server.get("/warehouse/v1/companies/:id", validateToken, async (req, res) => {
 
 
 
+/**** Contactos ****/
+
+
+
+///Endpoint para: traer todos los contactos.
+server.get("/warehouse/v1/contacts", validateToken, async (req, res) => {
+    try {
+        const contactBD = await obtenerDatosBD("contacts", true, true, true);
+    
+        if (contactBD.length > 0) {
+            res.status(200).json({data: contactBD, status: 200});
+        } else { 
+            res.status(404).json("No hay contactos creados");
+        }
+    } catch (error) {
+        res.status(500).send("Ah ocurrido un error...." + error);
+    }
+});
+ 
+
+///Endpoint para crear contactos
+server.post("/warehouse/v1/contacts", validateToken, async (req, res) => {
+    const { name, lastname, role, email, company, city, address, account } = req.body;
+	try {
+        const nameAccount = account[0].name;
+        const channelAccount = account[0].channel;
+        const preferenceAccount = account[0].preference;
+		const emailBD = await obtenerDatosBD("contacts", "mail", email);            
+		let accountBD = await obtenerDatosBD("accounts", "name", nameAccount);            
+        if (emailBD) {
+            res.status(409).json("El contacto a crear ya se encuentra registrado");
+            return;
+        } else if (accountBD) {
+            res.status(409).json("Error ya hay un contacto con la misma cuenta");
+            return;
+        }
+        if ((name && lastname && role && email && company && city && address && account)) {            
+            if (nameAccount && channelAccount && preferenceAccount) {
+                let updateBD = await sequelize.query(
+                    "INSERT INTO accounts (name, channel_id, preference_id) VALUES (:nameAccount, :channelAccount, :preferenceAccount)",
+                    { replacements: { nameAccount, channelAccount, preferenceAccount} }
+                );
+                accountBD = await obtenerDatosBD("accounts", "name", nameAccount);
+                accountId = accountBD.account_id;
+                updateBD = await sequelize.query(
+                    "INSERT INTO contacts (name, lastname, role, mail, company_id, city_id, address, account_id) VALUES (:name, :lastname, :role, :email, :company, :city, :address, :accountId)",
+                    { replacements: { name, lastname, role, email, company, city, address, accountId} }
+                );
+                res.status(200).json("Usuario creado correctamente");
+            } else {
+                res.status(400).send("Todos los campos son necesarios para registrarse");
+            }
+            
+        } else {
+            res.status(400).send("Todos los campos son necesarios para registrarse");
+        }
+	} catch (error) {
+		res.status(500).send("Ah ocurrido un error...." + error);
+	}
+});
+
+
+///Endpoint para actualizar informacion de los contactos
+server.put("/warehouse/v1/contacts/:id", validateToken, async (req, res) => {
+    const idContact = req.params.id;
+    try {
+        const { name, lastname, role, email, company, city, address, account } = req.body;
+        let contactBD = await obtenerDatosBD("contacts", "contact_id", idContact);
+        const contactId = contactBD.contact_id;       
+        if (contactBD) {            
+            if ((name || lastname || role || email || company || city || address || account)) {
+                if (account) {
+                    const nameAccount = account[0].name;
+                    const channel_id = account[0].channel;
+                    const preference_id = account[0].preference; 
+
+                    if (nameAccount || channel_id || preference_id) {
+                        const accountId = contactBD.account_id;
+                        const accountBD = await obtenerDatosBD("accounts", "account_id", accountId);
+                        const accountFilter = filterProps({ nameAccount, channel_id, preference_id});
+                        const updateAccount = { ...accountBD, ...accountFilter };
+                        console.log(updateAccount);
+                        let updateBD = await sequelize.query(
+                            "UPDATE accounts SET name = :updateName, channel_id = :updateChannel, preference_id = :updatePreference WHERE account_id = :accountId",
+                            {
+                                replacements: {
+                                    updateName: updateAccount.nameAccount,
+                                    updateChannel: updateAccount.channel_id,
+                                    updatePreference: updateAccount.preference_id,
+                                    accountId: accountId,
+                                },
+                            }
+                        );
+                        
+                        contactBD = await obtenerDatosBD("contacts", "contact_id", idContact);
+    
+                        const contactFilter = filterProps({ name, lastname, role , email, company, city, address});
+                        const updateContact = { ...contactBD, ...contactFilter };
+                        console.log(updateContact);
+                        updateBD = await sequelize.query(
+                            "UPDATE contacts SET name = :updateName, lastname = :updateLastName, role = :updateRole, mail = :updateEmail, company_id = :updateCompany, city_id = :updateCity, address = :updateAddress, account_id = :updateAccount WHERE contact_id = :contactId",
+                            {
+                                replacements: {
+                                    updateName: updateContact.name,
+                                    updateLastName: updateContact.lastname,
+                                    updateRole: updateContact.role,
+                                    updateEmail: updateContact.mail,
+                                    updateCompany: updateContact.company_id,
+                                    updateCity: updateContact.city_id,
+                                    updateAddress: updateContact.address,
+                                    updateAccount: updateContact.account_id,
+                                    contactId: contactId,
+                                },
+                            }
+                        );
+                        res.status(200).send("Contacto actualizado correctamente");
+                    } else {
+                        res.status(400).send("Debe haber por lo menos un parametro para actualiar");
+                    }
+                } else {
+                    const contactFilter = filterProps({ name, lastname, role , email, company, city, address, account});
+                        const updateContact = { ...contactBD, ...contactFilter };
+                        console.log(updateContact);
+                        let updateBD = await sequelize.query(
+                            "UPDATE contacts SET name = :updateName, lastname = :updateLastName, role = :updateRole, mail = :updateEmail, company_id = :updateCompany, city_id = :updateCity, address = :updateAddress, account_id = :updateAccount WHERE contact_id = :contactId",
+                            {
+                                replacements: {
+                                    updateName: updateContact.name,
+                                    updateLastName: updateContact.lastname,
+                                    updateRole: updateContact.role,
+                                    updateEmail: updateContact.mail,
+                                    updateCompany: updateContact.company_id,
+                                    updateCity: updateContact.city_id,
+                                    updateAddress: updateContact.address,
+                                    updateAccount: updateContact.account_id,
+                                    contactId: contactId,
+                                },
+                            }
+                        );
+                        res.status(200).send("Contacto actualizado correctamente");
+                }          
+                
+            } else {
+                res.status(400).send("Debe haber por lo menos un parametro para actualiar");
+            }
+        } else {
+            res.status(404).json("El ID ingresado no existe");
+        }
+    } catch (error) {
+        res.status(500).send("Ah ocurrido un error...." + error);
+    }
+});
+ 
+
+///Endpoint para eliminar contactos
+server.delete("/warehouse/v1/contacts/:id", validateToken, async (req, res) => {
+    const idContact = req.params.id;	
+    try {
+        const contactBD = await obtenerDatosBD("contacts", "contact_id", idContact);
+        if (contactBD) {
+            const updateBD = await sequelize.query(`UPDATE contacts SET disabled = true WHERE contact_id = :contactId`, {
+                replacements: {
+                    contactId: idContact,
+                },
+            });
+            res.status(200).json("La cuenta se eliminó correctamente");
+        } else {
+            res.status(404).json("El ID ingresado no existe");
+        }
+        
+    } catch (error) {
+        res.status(500).send("Ah ocurrido un error...." + error);
+    }
+});
+  
+
+///Endpoint para buscar contactos en especifico
+server.get("/warehouse/v1/contacts/:id", validateToken, async (req, res) => {
+    const idContact = req.params.id;
+	try {
+		const contactBD = await obtenerDatosBD("contacts", "contact_id", idContact);
+        if (contactBD) {
+            res.status(200).json({data: contactBD, status: 200});
+        } else {
+            res.status(404).json("El ID ingresado no existe");
+        }
+	} catch (error) {
+		res.status(500).send("Ah ocurrido un error...." + error);
+	}
+});
+
+
+
+
 
 
 ////------- FUNCIONES -------\\\\
