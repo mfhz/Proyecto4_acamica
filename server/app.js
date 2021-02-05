@@ -997,6 +997,118 @@ server.get("/warehouse/v1/contacts/:id", validateToken, async (req, res) => {
 
 
 
+/**** Canales ****/
+
+
+
+///Endpoint para obtener todos los canales
+server.get("/warehouse/v1/channels/", validateToken, async (req, res) => {
+    try {
+        const getChannels = await obtenerDatosBD('channels', true, true, true);
+            if (getChannels.length > 0) {
+                res.status(200).json({data: getChannels, status: 200});
+            } else {
+                res.status(404).send("No hay regiones creadas");
+            }
+    } catch (error) {
+        res.status(500).send("Ah ocurrido un error...." + error);
+    }
+})
+
+
+///Endpoint para crear un canal
+server.post("/warehouse/v1/channels/", validateToken, async (req, res) => {
+    const { name } = req.body;	
+    try {
+        const channelBD = await obtenerDatosBD("channels", "name", name);
+        if (channelBD) {
+            res.status(409).json("El nombre ingresado ya existe, por favor intente con otro");
+            return;
+        }
+        if (name) {
+            const updateBD = await sequelize.query(
+                "INSERT INTO channels (name) VALUES (:name)",
+                { replacements: { name } }
+            );
+            res.status(200).json("Canal creado correctamente");
+        } else {
+            res.status(400).send("Debe ingresar un nombre para crear el canal");
+        }
+    } catch (error) {
+        res.status(500).send("Ah ocurrido un error...." + error);
+    }
+})
+
+
+///Endpoint para buscar un canal en especifico
+server.get("/warehouse/v1/channels/:id", validateToken, async (req, res) => {
+	const idChannel = req.params.id;
+	try {
+		const nameBD = await obtenerDatosBD("channels", "channel_id", idChannel);
+        if (nameBD) {
+            res.status(200).json({data: nameBD, status: 200});
+        } else {
+            res.status(404).json("El ID ingresado no existe");
+        }
+	} catch (error) {
+		res.status(500).send("Ah ocurrido un error...." + error);
+	}
+});
+
+
+///Endpoint para actualizar un canal en especifico
+server.put("/warehouse/v1/channels/:id", validateToken, async (req, res) => {
+	const idParamChannel = req.params.id;
+	try {
+		const channelBD = await obtenerDatosBD("channels", "channel_id", idParamChannel);
+        const channelId = channelBD.channel_id;
+        const { name } = req.body;
+        if (channelBD.name === name) {
+            res.status(409).json("El nombre ingresado ya existe, por favor intente con otro");
+            return;
+        }
+        if (channelBD) {            
+            if (name) {
+                const channelFilter = filterProps({ name });
+                const updateChannel = { ...channelBD, ...channelFilter };
+                const updateBD = await sequelize.query (
+                    "UPDATE channels SET name = :nameUpdate WHERE channel_id = :channelId",
+                    {
+                        replacements: {
+                            nameUpdate: updateChannel.name,
+                            channelId: channelId,
+                        },
+                    }
+                );
+                res.status(200).send("El canal ha sido actualizado correctamente");
+            } else {
+                res.status(400).send("Debe haber un campo para actualizar");
+            }		    	
+        } else {
+            res.status(404).json("El ID ingresado no existe");
+        }
+	} catch (error) {
+		res.status(500).send("Ah ocurrido un error...." + error);
+	}
+});
+
+
+///Endpoint para eliminar un canal en especifico
+server.delete("/warehouse/v1/channels/:id", validateToken, async (req, res) => {
+    const idParamChannel = req.params.id;
+    const channelBD = await obtenerDatosBD("channels", "channel_id", idParamChannel);
+    const channelId = channelBD.channel_id;
+    if (channelBD) {
+        const updateBD = await sequelize.query(`UPDATE channels set disabled = true WHERE channel_id = :channelId`, {
+            replacements: {
+                channelId: channelId,
+            },
+        });
+        res.status(200).send("El canal ha sido eliminado correctamente");
+    } else {
+        res.status(404).json("El ID ingresado no existe");
+    }
+});
 
 
 
