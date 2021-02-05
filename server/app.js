@@ -1063,11 +1063,12 @@ server.put("/warehouse/v1/channels/:id", validateToken, async (req, res) => {
 		const channelBD = await obtenerDatosBD("channels", "channel_id", idParamChannel);
         const channelId = channelBD.channel_id;
         const { name } = req.body;
-        if (channelBD.name === name) {
-            res.status(409).json("El nombre ingresado ya existe, por favor intente con otro");
-            return;
-        }
-        if (channelBD) {            
+        
+        if (channelBD) { 
+            if (channelBD.name === name) {
+                res.status(409).json("El nombre ingresado ya existe, por favor intente con otro");
+                return;
+            }           
             if (name) {
                 const channelFilter = filterProps({ name });
                 const updateChannel = { ...channelBD, ...channelFilter };
@@ -1105,6 +1106,123 @@ server.delete("/warehouse/v1/channels/:id", validateToken, async (req, res) => {
             },
         });
         res.status(200).send("El canal ha sido eliminado correctamente");
+    } else {
+        res.status(404).json("El ID ingresado no existe");
+    }
+});
+
+
+
+/**** Preferencias ****/
+
+
+
+///Endpoint para obtener todas las preferencias
+server.get("/warehouse/v1/preferences/", validateToken, async (req, res) => {
+    try {
+        const getPreferences = await obtenerDatosBD('preferences', true, true, true);
+            if (getPreferences.length > 0) {
+                res.status(200).json({data: getPreferences, status: 200});
+            } else {
+                res.status(404).send("No hay regiones creadas");
+            }
+    } catch (error) {
+        res.status(500).send("Ah ocurrido un error...." + error);
+    }
+})
+
+
+///Endpoint para crear una prefencia
+server.post("/warehouse/v1/preferences/", validateToken, async (req, res) => {
+    const { name } = req.body;	
+    try {
+        const preferenceBD = await obtenerDatosBD("preferences", "name", name);
+        if (preferenceBD) {
+            res.status(409).json("El nombre ingresado ya existe, por favor intente con otro");
+            return;
+        }
+        if (name) {
+            const updateBD = await sequelize.query(
+                "INSERT INTO preferences (name) VALUES (:name)",
+                { replacements: { name } }
+            );
+            res.status(200).json("La preferencia ha sido creada correctamente");
+        } else {
+            res.status(400).send("Debe ingresar un nombre para crear la preferencia");
+        }
+    } catch (error) {
+        res.status(500).send("Ah ocurrido un error...." + error);
+    }
+})
+
+
+///Endpoint para buscar una preferencia en especifico
+server.get("/warehouse/v1/preferences/:id", validateToken, async (req, res) => {
+	const idPreference = req.params.id;
+	try {
+		const preferenceBD = await obtenerDatosBD("preferences", "preference_id", idPreference);
+        if (preferenceBD) {
+            res.status(200).json({data: preferenceBD, status: 200});
+        } else {
+            res.status(404).json("El ID ingresado no existe");
+        }
+	} catch (error) {
+		res.status(500).send("Ah ocurrido un error...." + error);
+	}
+});
+
+
+///Endpoint para actualizar una preferencia en especifico
+server.put("/warehouse/v1/preferences/:id", validateToken, async (req, res) => {
+	const idParamPreference = req.params.id;
+	try {
+		const preferenceBD = await obtenerDatosBD("preferences", "preference_id", idParamPreference);
+        const preferenceId = preferenceBD.preference_id;
+        console.log(preferenceBD);
+        const { name } = req.body;
+        
+        if (preferenceBD) { 
+            if (preferenceBD.name === name) {
+                res.status(409).json("El nombre ingresado ya existe, por favor intente con otro");
+                return;
+            }           
+            if (name) {
+                const preferenceFilter = filterProps({ name });
+                const updatePreference = { ...preferenceBD, ...preferenceFilter };
+                const updateBD = await sequelize.query (
+                    "UPDATE preferences SET name = :nameUpdate WHERE preference_id = :preferenceId",
+                    {
+                        replacements: {
+                            nameUpdate: updatePreference.name,
+                            preferenceId: preferenceId,
+                        },
+                    }
+                );
+                res.status(200).send("La preferencia ha sido actualizada correctamente");
+            } else {
+                res.status(400).send("Debe haber un campo para actualizar");
+            }		    	
+        } else {
+            res.status(404).json("El ID ingresado no existe");
+        }
+	} catch (error) {
+		res.status(500).send("Ah ocurrido un error...." + error);
+	}
+});
+
+
+///Endpoint para eliminar una preferencia en especifico
+server.delete("/warehouse/v1/preferences/:id", validateToken, async (req, res) => {
+    const idParamPreference = req.params.id;
+    const preferenceBD = await obtenerDatosBD("preferences", "preference_id", idParamPreference);
+    const preferenceId = preferenceBD.preference_id;
+    if (preferenceBD) {
+        const updateBD = await sequelize.query(`UPDATE preferences set disabled = true WHERE preference_id = :preferenceId`, {
+            replacements: {
+                preferenceId: preferenceId,
+            },
+        });
+        res.status(200).send("La preferencia ha sido eliminada correctamente");
     } else {
         res.status(404).json("El ID ingresado no existe");
     }
