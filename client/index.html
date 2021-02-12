@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./styles/index.css">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,600;0,700;0,800;1,400;1,600;1,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css">
+    <title>Document</title>
+</head>
+<body>
+    <header class="header">
+        <div class="header__img">
+            <p class="header__img--logo">LOGO</p>
+        </div>
+        <nav class="header__nav">
+            <ul class="menu">
+                <li class="menu__li">
+                    <a class="menu__li--item" href="">Contactos</a>
+                </li>
+                <li class="menu__li">
+                    <a class="menu__li--item" href="">Compañías</a>
+                </li>
+                <li class="menu__li">
+                    <a class="menu__li--item" href="">Usuarios</a>
+                </li>
+                <li class="menu__li">
+                    <a class="menu__li--item" href="">Región / Ciudad</a>
+                </li>
+            </ul>
+        </nav>
+    </header>
+    <main class="main">
+        <section class="main__search">
+            <h2 class="main__search--title">Contactos</h2>
+            <div class="main__search--container"> 
+                <div class="filter">
+                    <form class="filter__form">
+                        <input class="filter__form--text" type="text" name="" id="">
+                    </form>
+                    <i class="fas fa-sort-down filter__form--sort"></i>
+                    <div class="filter__icon">
+                        <i class="fas fa-search filter__icon--search"></i>
+                    </div>
+                </div>
+                <div class="contactNew">
+                    <div class="contactNew__icon">
+                        <!-- <i class="fas fa-arrow-alt-to-top"></i> -->
+                        <i class="fas fa-upload contactNew__icon--upload"></i>
+                    </div>
+                    <form class="contactNew__form">
+                        <label for="export_contacts"></label>
+                        <select class="contactNew__form--check" id="year">
+                            <option value="">Exportar contactos</option>
+                            <option value="">Importar contactos</option>
+                        </select>
+                    </form>
+                    <button class="contactNew__button">
+                        <a class="contactNew__button--link" href="">Agregar contacto</a>
+                    </button>
+                </div>
+            </div>
+        </section>
+    </main>
+</body>
+</html>

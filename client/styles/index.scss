@@ -1,0 +1,153 @@
+* {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    box-sizing: content-box;
+    font-family: 'Open Sans', sans-serif;
+}
+
+body {
+    background: #8F57FD;;
+
+    .header {
+        height: 64px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding-left: 30px;
+
+        .header__img {
+
+            .header__img--logo {
+                color: #ffffff;
+                font-size: 25px;
+                font-weight: bold;
+            }
+        }
+
+        .header__nav {
+
+            .menu {
+                display: flex;
+
+                .menu__li {
+                    margin-right: 34px;
+                    list-style: none;
+
+                    .menu__li--item {
+                        color: #ffffff;
+                        text-decoration: none;
+                    }
+                }
+            }
+        }
+    }
+
+    .main {
+        padding: 0 30px;
+
+        .main__search {
+            padding-top: 30px;            
+
+            .main__search--title {
+                color: #ffffff;
+                margin-bottom: 20px;
+            }
+
+            .main__search--container {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+
+                .filter {
+                    display: flex;
+                    align-items: center;
+
+                    .filter__form {
+                        width: 510px;
+                        line-height: 41px;
+                        border: 2px #CCCCCC solid;
+                        margin-right: 9px;
+
+                        .filter__form--text {
+                            width: 400px;
+                            outline: none;
+                            background: transparent;
+                            padding-left: 10px;
+                            color: #ffffff;
+                            font-size: 15px;
+                        }                        
+                    }
+
+                    .filter__form--sort {
+                        position: relative;
+                        left: -35px;
+                        top: -7px;
+                        cursor: pointer;
+                        color: #CCCCCC;
+                        font-size: 18px;
+                    }
+
+                    .filter__icon {
+                        width: 41px;
+                        line-height: 41px;
+                        border: 2px #CCCCCC solid;
+                        text-align: center;    
+                        cursor: pointer;                    
+
+                        .filter__icon--search {
+                            color: #21C08B;
+                            font-size: 20px;
+                        }
+                    }
+                }
+
+                .contactNew {
+                    display: flex;
+                    align-items: center;
+
+                    .contactNew__icon {
+                        width: 41px;
+                        line-height: 41px;
+                        border: 2px #ffffff solid;
+                        text-align: center;
+                        margin-right: 9px;
+                        cursor: pointer;
+
+                        .contactNew__icon--upload {
+                            font-size: 19px;
+                            color: #21C08B;
+                        }
+                    }
+
+                    .contactNew__form {
+                        width: 172px;
+                        line-height: 41px;
+                        border: 2px #ffffff solid;
+                        margin-right: 9px;
+
+                        .contactNew__form--check {
+                            width: 150px;
+                            padding-left: 10px;
+                            color: #ffffff;
+                            background: transparent;
+                            outline: none;
+                        }
+                    }
+
+                    .contactNew__button {
+                        width: 150px;
+                        line-height: 41px;
+                        border: 2px #21C08B solid;
+                        background: #21C08B;
+
+                        .contactNew__button--link {
+                            text-decoration: none;
+                            color: #ffffff;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

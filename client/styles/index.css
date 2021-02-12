@@ -1,0 +1,171 @@
+* {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  -webkit-box-sizing: content-box;
+          box-sizing: content-box;
+  font-family: 'Open Sans', sans-serif;
+}
+
+body {
+  background: #8F57FD;
+}
+
+body .header {
+  height: 64px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
+  padding-left: 30px;
+}
+
+body .header .header__img .header__img--logo {
+  color: #ffffff;
+  font-size: 25px;
+  font-weight: bold;
+}
+
+body .header .header__nav .menu {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+}
+
+body .header .header__nav .menu .menu__li {
+  margin-right: 34px;
+  list-style: none;
+}
+
+body .header .header__nav .menu .menu__li .menu__li--item {
+  color: #ffffff;
+  text-decoration: none;
+}
+
+body .main {
+  padding: 0 30px;
+}
+
+body .main .main__search {
+  padding-top: 30px;
+}
+
+body .main .main__search .main__search--title {
+  color: #ffffff;
+  margin-bottom: 20px;
+}
+
+body .main .main__search .main__search--container {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+
+body .main .main__search .main__search--container .filter {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+
+body .main .main__search .main__search--container .filter .filter__form {
+  width: 510px;
+  line-height: 41px;
+  border: 2px #CCCCCC solid;
+  margin-right: 9px;
+}
+
+body .main .main__search .main__search--container .filter .filter__form .filter__form--text {
+  width: 400px;
+  outline: none;
+  background: transparent;
+  padding-left: 10px;
+  color: #ffffff;
+  font-size: 15px;
+}
+
+body .main .main__search .main__search--container .filter .filter__form--sort {
+  position: relative;
+  left: -35px;
+  top: -7px;
+  cursor: pointer;
+  color: #CCCCCC;
+  font-size: 18px;
+}
+
+body .main .main__search .main__search--container .filter .filter__icon {
+  width: 41px;
+  line-height: 41px;
+  border: 2px #CCCCCC solid;
+  text-align: center;
+  cursor: pointer;
+}
+
+body .main .main__search .main__search--container .filter .filter__icon .filter__icon--search {
+  color: #21C08B;
+  font-size: 20px;
+}
+
+body .main .main__search .main__search--container .contactNew {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+
+body .main .main__search .main__search--container .contactNew .contactNew__icon {
+  width: 41px;
+  line-height: 41px;
+  border: 2px #ffffff solid;
+  text-align: center;
+  margin-right: 9px;
+  cursor: pointer;
+}
+
+body .main .main__search .main__search--container .contactNew .contactNew__icon .contactNew__icon--upload {
+  font-size: 19px;
+  color: #21C08B;
+}
+
+body .main .main__search .main__search--container .contactNew .contactNew__form {
+  width: 172px;
+  line-height: 41px;
+  border: 2px #ffffff solid;
+  margin-right: 9px;
+}
+
+body .main .main__search .main__search--container .contactNew .contactNew__form .contactNew__form--check {
+  width: 150px;
+  padding-left: 10px;
+  color: #ffffff;
+  background: transparent;
+  outline: none;
+}
+
+body .main .main__search .main__search--container .contactNew .contactNew__button {
+  width: 150px;
+  line-height: 41px;
+  border: 2px #21C08B solid;
+  background: #21C08B;
+}
+
+body .main .main__search .main__search--container .contactNew .contactNew__button .contactNew__button--link {
+  text-decoration: none;
+  color: #ffffff;
+}
+/*# sourceMappingURL=index.css.map */
