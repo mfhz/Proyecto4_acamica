@@ -1,0 +1,85 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+
+    .header {
+        height: 64px;
+        // background-color: #196DDC;
+        background-color: #21C08B;
+        display: flex;
+        align-items: center;
+        padding-left: 30px;
+
+        .header__img {
+
+            .header__img--logo {
+                color: #ffffff;
+                font-size: 18px;
+                font-weight: bold;
+            }
+        }
+    }
+
+    .main {
+        background: linear-gradient(#21C08B, #8F57FD);
+        display: flex;
+        flex-direction: column;
+        
+        .main__login {
+            padding-top: 100px;
+            height: 100vh;
+            
+            .login {
+                width: 400px;
+                height: 300px;
+                border: 2px #ffffff solid;
+                border-radius: 30px;
+                margin: 0 auto;
+                text-align: center;
+
+                .login__title {
+                    font-size: 25px;
+                    margin: 30px 0;
+                    color: #ffffff;
+                }
+
+                .login__form {
+
+                    .login__form--input {
+                        outline-style: none;
+                        padding-left: 15px;
+                        border: 0;
+                        border-bottom: 2px white solid;
+                        width: 350px;
+                        height: 35px;
+                        margin-bottom: 30px;
+                        background-color: transparent;
+                        color: #ffffff;
+                        font-size: 16px;
+                        &::placeholder {
+                            color: #ffffff;
+                        }
+                    }
+
+                    .login__form--button {
+                        margin-top: 10px;
+                        height: 40px;
+                        width: 200px;
+                        background-color: rgba(255, 255, 255, 0.1);
+                        border: 0;
+                        border-radius: 30px;
+                        color: #ffffff;
+                        font-size: 16px;
+                        font-weight: bold;
+                        cursor: pointer;
+                        outline: none;
+                    }
+                }
+            }
+        }
+    }
+}

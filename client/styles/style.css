@@ -1,0 +1,100 @@
+* {
+  margin: 0;
+  padding: 0;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+}
+
+body .header {
+  height: 64px;
+  background-color: #21C08B;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  padding-left: 30px;
+}
+
+body .header .header__img .header__img--logo {
+  color: #ffffff;
+  font-size: 18px;
+  font-weight: bold;
+}
+
+body .main {
+  background: -webkit-gradient(linear, left top, left bottom, from(#21C08B), to(#8F57FD));
+  background: linear-gradient(#21C08B, #8F57FD);
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+}
+
+body .main .main__login {
+  padding-top: 100px;
+  height: 100vh;
+}
+
+body .main .main__login .login {
+  width: 400px;
+  height: 300px;
+  border: 2px #ffffff solid;
+  border-radius: 30px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+body .main .main__login .login .login__title {
+  font-size: 25px;
+  margin: 30px 0;
+  color: #ffffff;
+}
+
+body .main .main__login .login .login__form .login__form--input {
+  outline-style: none;
+  padding-left: 15px;
+  border: 0;
+  border-bottom: 2px white solid;
+  width: 350px;
+  height: 35px;
+  margin-bottom: 30px;
+  background-color: transparent;
+  color: #ffffff;
+  font-size: 16px;
+}
+
+body .main .main__login .login .login__form .login__form--input::-webkit-input-placeholder {
+  color: #ffffff;
+}
+
+body .main .main__login .login .login__form .login__form--input:-ms-input-placeholder {
+  color: #ffffff;
+}
+
+body .main .main__login .login .login__form .login__form--input::-ms-input-placeholder {
+  color: #ffffff;
+}
+
+body .main .main__login .login .login__form .login__form--input::placeholder {
+  color: #ffffff;
+}
+
+body .main .main__login .login .login__form .login__form--button {
+  margin-top: 10px;
+  height: 40px;
+  width: 200px;
+  background-color: rgba(255, 255, 255, 0.1);
+  border: 0;
+  border-radius: 30px;
+  color: #ffffff;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  outline: none;
+}
+/*# sourceMappingURL=style.css.map */

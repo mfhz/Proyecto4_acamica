@@ -22,6 +22,9 @@ server.listen(3000, () => {
     console.log('Servivor Inicializado');
 })
 
+/* Cors */
+const cors = require("cors");
+server.use(cors());
 
 ////------- ENDPOINTS -------\\\\
 
@@ -30,8 +33,11 @@ server.listen(3000, () => {
 
 
 ///Endpoint al hacer login entrega token 
-server.get("/warehouse/v1/users/login", async (req, res) => {
-	const { email, pass } = req.body;
+server.post("/warehouse/v1/users/login", async (req, res) => {
+    const { email, pass } = req.body;
+    console.log(email);
+    console.log(pass);
+    // console.log(req);
 	try {
 		const emailBD = await obtenerDatosBD("users", "mail", email);
         if (email && pass) {
@@ -44,12 +50,14 @@ server.get("/warehouse/v1/users/login", async (req, res) => {
                     isAdmin: emailBD.admin,
                     isDisabled: emailBD.disabled,
                 });
-                res.status(200).json(token);
+                res.status(200).json({token: token});
             } else {
                 res.status(400).send("Correo o contraseña incorrectos");
+                console.log("Correo o contraseña incorrectos");
             }
         } else {
             res.status(400).send("Se debe ingresar correo y contraseña");
+            console.log("Se debe ingresar correo y contraseña");
         }
 		
 	} catch (error) {
